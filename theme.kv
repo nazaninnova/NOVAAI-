@@ -1,0 +1,219 @@
+#:import StarField starfield.StarField
+#:import rtl farsi.rtl
+#:import PersianTextField farsi_widgets.PersianTextField
+#:set FA_FONT 'assets/fonts/Vazirmatn-Regular.ttf'
+
+<SpinnerOption>:
+    font_name: FA_FONT
+    background_normal: ''
+    background_color: 0.10, 0.05, 0.20, 1
+    color: 0.10, 0.9, 0.9, 1
+
+<NeonLabel@Label>:
+    color: 0.75, 0.97, 1, 1
+    font_size: '16sp'
+    font_name: FA_FONT
+    markup: True
+    outline_width: 1.4
+    outline_color: 0.15, 0.75, 0.95, 1
+
+<NeonButton@Button>:
+    background_normal: ''
+    background_down: ''
+    background_color: 0, 0, 0, 0
+    color: 0.05, 0.95, 0.9, 1
+    font_name: FA_FONT
+    bold: True
+    canvas.before:
+        Color:
+            rgba: (0.55, 0.15, 0.95, 0.9) if self.state == 'normal' else (0.10, 0.85, 0.92, 0.95)
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 14)
+            width: 1.6
+        Color:
+            rgba: (0.55, 0.15, 0.95, 0.18) if self.state == 'normal' else (0.10, 0.85, 0.92, 0.28)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [14]
+
+<ChatBubble@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    padding: [14, 10]
+    is_user: False
+    text: ''
+    canvas.before:
+        Color:
+            rgba: (0.10, 0.85, 0.92, 0.16) if self.is_user else (0.55, 0.15, 0.95, 0.16)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [16]
+        Color:
+            rgba: (0.10, 0.85, 0.92, 0.55) if self.is_user else (0.55, 0.15, 0.95, 0.55)
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 16)
+            width: 1.1
+    Label:
+        text: root.text
+        markup: True
+        color: 0.90, 0.98, 1, 1
+        font_size: '15sp'
+        font_name: FA_FONT
+        text_size: self.width - 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        halign: 'right'
+
+<ImageBubble@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    padding: [10, 10]
+    is_user: False
+    image_source: ''
+    canvas.before:
+        Color:
+            rgba: (0.10, 0.85, 0.92, 0.16) if self.is_user else (0.55, 0.15, 0.95, 0.16)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [16]
+        Color:
+            rgba: (0.10, 0.85, 0.92, 0.55) if self.is_user else (0.55, 0.15, 0.95, 0.55)
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 16)
+            width: 1.1
+    Image:
+        source: root.image_source
+        size_hint_y: None
+        height: '220sp'
+        allow_stretch: True
+        keep_ratio: True
+
+<SplashScreen>:
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.02, 0.01, 0.05, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Image:
+            source: 'assets/images/logo.png'
+            size_hint: 0.65, 0.65
+            pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+            allow_stretch: True
+            keep_ratio: True
+
+<ProfileScreen>:
+    FloatLayout:
+        StarField:
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [30, 50, 30, 30]
+            spacing: 16
+            NeonLabel:
+                text: '[b][color=8ef6ff]✦ Nova[/color] [color=c68bff]AI[/color][/b]'
+                font_size: '26sp'
+                size_hint_y: None
+                height: '50sp'
+            NeonLabel:
+                text: rtl('یه پروفایل انتخاب کن یا یکی جدید بساز')
+                font_size: '13sp'
+                size_hint_y: None
+                height: '26sp'
+            ScrollView:
+                BoxLayout:
+                    id: profiles_box
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 8
+                    padding: [4, 6]
+            BoxLayout:
+                size_hint_y: None
+                height: '52sp'
+                spacing: 8
+                PersianTextField:
+                    id: new_profile_input
+                    hint_text: 'اسم جدید...'
+                    on_text_validate: root.create_or_continue()
+                NeonButton:
+                    text: rtl('شروع')
+                    size_hint_x: None
+                    width: '110sp'
+                    on_release: root.create_or_continue()
+
+<RootScreen>:
+    FloatLayout:
+        StarField:
+            id: starfield
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [16, 14, 16, 10]
+            spacing: 10
+
+            # نوار بالا: عنوان + انتخاب حالت
+            BoxLayout:
+                size_hint_y: None
+                height: '52sp'
+                spacing: 10
+                NeonLabel:
+                    text: '[b][color=8ef6ff]✦ Nova[/color] [color=c68bff]AI[/color][/b]  [size=12][color=88e0ff]' + rtl('آفلاین') + '[/color][/size]'
+                    font_size: '22sp'
+                    size_hint_x: 0.55
+                Spinner:
+                    id: mode_spinner
+                    text: rtl('عمومی')
+                    font_name: FA_FONT
+                    values: [rtl('عمومی'), rtl('داستان‌نویسی'), rtl('علمی'), rtl('همراه احساسی')]
+                    size_hint_x: 0.45
+                    background_normal: ''
+                    background_color: 0.10, 0.05, 0.20, 1
+                    color: 0.10, 0.9, 0.9, 1
+
+            # پیام‌ها
+            ScrollView:
+                id: scroll
+                do_scroll_x: False
+                BoxLayout:
+                    id: chat_box
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 8
+                    padding: [4, 6]
+
+            # وضعیت مدل
+            NeonLabel:
+                id: status_label
+                text: ''
+                size_hint_y: None
+                height: '20sp' if self.text else 0
+                font_size: '12sp'
+                color: 1, 0.4, 0.5, 1
+
+            # نوار ارسال پیام
+            BoxLayout:
+                size_hint_y: None
+                height: '50sp'
+                spacing: 8
+                NeonButton:
+                    text: rtl('آپلود فایل')
+                    size_hint_x: None
+                    width: '96sp'
+                    font_size: '13sp'
+                    on_release: root.open_upload_menu()
+                PersianTextField:
+                    id: msg_input
+                    hint_text: 'سوالت رو بپرس...'
+                    on_text_validate: root.send_message()
+                NeonButton:
+                    text: rtl('ارسال')
+                    size_hint_x: None
+                    width: '90sp'
+                    on_release: root.send_message()
